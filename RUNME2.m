@@ -1,6 +1,13 @@
 % Simple experiment on reconstruction accuracy using a synthetic world and
 % the Longuet-Higgins eight-point algorithm
 
+% TRIALS
+n = 150;
+% Max sigma
+maxSigma = 5;
+% Step size
+stepSize = 0.25;
+
 % Do we want to see images and reconstruction errors?
 verbose = true;
 
@@ -27,7 +34,7 @@ K1 = camera(1).Ks * camera(1).Kf;
 K2 = camera(2).Ks * camera(2).Kf;
 
 
-sigmaVals = 0:.25:4;
+sigmaVals = 0:stepSize:maxSigma;
 
 
 imgArr = {};
@@ -42,7 +49,7 @@ eImg_Arr = zeros(size(sigmaVals));
 e1_Arr = zeros(size(sigmaVals));
 e2_Arr = zeros(size(sigmaVals));
 
-sigmaVals2 = 0:1:4;
+sigmaVals2 = 0:1:maxSigma;
 for i = 1:size(sigmaVals2, 2)
   img2 = addNoise(img, sigmaVals2(i));
   % showImages(img2, camera, 2*i - 1);
@@ -67,7 +74,7 @@ end
 
 
 for i = 1:size(sigmaVals, 2)
-  for j = 1:30
+  for j = 1:n
     curImg = addNoise(img, sigmaVals(i));
     imgArr{i} = curImg;
     x1 = K1 \ [curImg(1, 1).x, curImg(2, 1).x];
@@ -93,18 +100,20 @@ for i = 1:size(sigmaVals, 2)
   end
 end
 
-eR_Arr = eR_Arr / 30;
-et_Arr = et_Arr / 30;
-eP_Arr = eP_Arr / 30;
-eImg_Arr = eImg_Arr / 30;
-e1_Arr = e1_Arr / 30;
-e2_Arr = e2_Arr / 30;
+eR_Arr = eR_Arr / n;
+et_Arr = et_Arr / n;
+eP_Arr = eP_Arr / n;
+eImg_Arr = eImg_Arr / n;
+e1_Arr = e1_Arr / n;
+e2_Arr = e2_Arr / n;
+
+nString = strcat('(n = ', int2str(n),  ' )');
 
 % Motion error
 % Translation and Rotation Error are in degrees, separate plot
 figure
 plot(sigmaVals,eR_Arr, sigmaVals, et_Arr);
-title('Graph of Motion Error (n = 30)');
+title(strcat('Graph of Motion Error ', nString));
 ylabel('Error (degrees)');
 xlabel('Sigma value');
 legend('Rotation error','Translation error');
@@ -113,7 +122,7 @@ legend('Rotation error','Translation error');
 
 figure
 plot(sigmaVals, eP_Arr);
-title('Graph of Structure Error (n = 30)');
+title(strcat('Graph of Structure Error ', nString));
 xlabel('Sigma value')
 ylabel('Error (length units per point)');
 
@@ -121,7 +130,7 @@ ylabel('Error (length units per point)');
 % Reprojection error
 figure
 plot(sigmaVals, eImg_Arr);
-title('Graph of Reprojection Error (n = 30)');
+title(strcat('Graph of Reprojection Error ', nString));
 xlabel('Sigma value')
 ylabel('Error (pixels per point)')
 
