@@ -148,6 +148,17 @@ ylabel('Error (pixels per point)')
 
 
 
+
+
+
+
+
+
+
+
+
+
+
 % fig = 1;
 % if verbose
 %     fprintf(1, 'Image noise standard deviation %.2g pixels\n', sigma);

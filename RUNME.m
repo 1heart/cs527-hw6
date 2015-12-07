@@ -15,7 +15,7 @@ t = distance * [unit([0.9 1 1]); unit([1.1 1 1])]';
 [box, camera, img] = world(side, t);
 
 % Add zero-mean Gaussian noise to the images
-sigma = 0.0;  % Standard deviation of noise, in pixels
+sigma = 8.0;  % Standard deviation of noise, in pixels
 img = addNoise(img, sigma);
 
 fig = 1;
