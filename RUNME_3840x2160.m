@@ -1,5 +1,6 @@
-% Simple experiment on reconstruction accuracy using a synthetic world and
-% the Longuet-Higgins eight-point algorithm
+%% Experiment 2
+
+n = 150;
 
 % Do we want to see images and reconstruction errors?
 verbose = true;
@@ -11,12 +12,16 @@ side = 210;
 distance = 500;
 t = distance * [unit([0.9 1 1]); unit([1.1 1 1])]';
 
-% Make a 3D box, two cameras, and the resulting images
-[box, camera, img] = world(side, t);
+% Observations
+% Rotation and translation error are 0 regardless
+% Structure error and reconstruction error decrease with lower resolution
+% Image seems to get narrower with lower resolution
+% When noise is added, rotation and translation are non-zero but decrease inversely with resolution
+% Sigma can be much higher and the reconstructed image will still be recognizable
+% Even looking at relative scale, the errors are higher for the lower resolution images, even though they have significantly less noise
 
-% Add zero-mean Gaussian noise to the images
-sigma = 0.0;  % Standard deviation of noise, in pixels
-img = addNoise(img, sigma);
+% 960 x 540
+[box, camera, img] = world(side, t, 3840, 2160);
 
 % Compute the true transformation between the camera reference frames
 G = camera(2).G / camera(1).G;
@@ -26,23 +31,13 @@ X = [box(1).X, box(2).X];
 K1 = camera(1).Ks * camera(1).Kf;
 K2 = camera(2).Ks * camera(2).Kf;
 
+sigmaVals2 = 0:.25:10; % Breaks down completely at 1.5
 
-sigmaVals = 0:.25:4;
+eR_Arr = zeros(size(sigmaVals2));
+et_Arr = zeros(size(sigmaVals2));
+eP_Arr = zeros(size(sigmaVals2));
+eImg_Arr = zeros(size(sigmaVals2));
 
-
-imgArr = {};
-% Rotation
-eR_Arr = zeros(size(sigmaVals));
-% Translation
-et_Arr = zeros(size(sigmaVals));
-% Structure Errors
-eP_Arr = zeros(size(sigmaVals));
-% Reprojection Errors
-eImg_Arr = zeros(size(sigmaVals));
-e1_Arr = zeros(size(sigmaVals));
-e2_Arr = zeros(size(sigmaVals));
-
-sigmaVals2 = 0:1:4;
 for i = 1:size(sigmaVals2, 2)
   img2 = addNoise(img, sigmaVals2(i));
   % showImages(img2, camera, 2*i - 1);
@@ -65,11 +60,9 @@ for i = 1:size(sigmaVals2, 2)
 
 end
 
-
-for i = 1:size(sigmaVals, 2)
-  for j = 1:30
-    curImg = addNoise(img, sigmaVals(i));
-    imgArr{i} = curImg;
+for i = 1:size(sigmaVals2, 2)
+  for j = 1:n
+    curImg = addNoise(img, sigmaVals2(i));
     x1 = K1 \ [curImg(1, 1).x, curImg(2, 1).x];
     x2 = K2 \ [curImg(1, 2).x, curImg(2, 2).x];
     % Compute the transformation between the reference systems of the two
@@ -88,23 +81,19 @@ for i = 1:size(sigmaVals, 2)
     [eImg, e1, e2] = reprojectionError(GComputed, XComputed, ...
         x1, x2, camera, verbose);
     eImg_Arr(i) = eImg_Arr(i) + eImg;
-    % e1_Arr(i) = e1_Arr(i) + e1;
-    % e2_Arr(i) = e2_Arr(i) + e2;
   end
 end
 
-eR_Arr = eR_Arr / 30;
-et_Arr = et_Arr / 30;
-eP_Arr = eP_Arr / 30;
-eImg_Arr = eImg_Arr / 30;
-e1_Arr = e1_Arr / 30;
-e2_Arr = e2_Arr / 30;
+eR_Arr = eR_Arr / n;
+et_Arr = et_Arr / n;
+eP_Arr = eP_Arr / n;
+eImg_Arr = eImg_Arr / n;
 
 % Motion error
 % Translation and Rotation Error are in degrees, separate plot
 figure
-plot(sigmaVals,eR_Arr, sigmaVals, et_Arr);
-title('Graph of Motion Error (n = 30)');
+plot(sigmaVals2,eR_Arr, sigmaVals2, et_Arr);
+title('Graph of Motion Error (n = 150)');
 ylabel('Error (degrees)');
 xlabel('Sigma value');
 legend('Rotation error','Translation error');
@@ -112,64 +101,15 @@ legend('Rotation error','Translation error');
 % Structure error
 
 figure
-plot(sigmaVals, eP_Arr);
-title('Graph of Structure Error (n = 30)');
+plot(sigmaVals2, eP_Arr);
+title('Graph of Structure Error (n = 150)');
 xlabel('Sigma value')
 ylabel('Error (length units per point)');
 
 
 % Reprojection error
 figure
-plot(sigmaVals, eImg_Arr);
-title('Graph of Reprojection Error (n = 30)');
+plot(sigmaVals2, eImg_Arr);
+title('Graph of Reprojection Error (n = 150)');
 xlabel('Sigma value')
 ylabel('Error (pixels per point)')
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-% fig = 1;
-% if verbose
-%     fprintf(1, 'Image noise standard deviation %.2g pixels\n', sigma);
-    
-%     % Display the images
-%     showImages(img, camera, fig);
-%     fig = fig + 2;
-% end
-
-
-
-
-
-
-
-% % Display reprojection errors
-% figure(fig)
-% showReprojectionError(e1, e2, x1, x2, camera, img, ...
-%     'With the eight-point algorithm');
-
-% % Display true and reconstructed scene structure in world coordinates
-% boxComputed = replaceShape(box, camera(1).G \ XComputed);
-
-% fig = fig + 1;
-% figure(fig)
-% showStructure(box, 'True Structure');
-
-% fig = fig + 1;
-% figure(fig)
-% showStructure(boxComputed, 'Reconstructed Structure');
-
-% placeFigures

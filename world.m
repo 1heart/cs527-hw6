@@ -1,6 +1,11 @@
-function [b, c, img] = world(side, t)
+function [b, c, img] = world(side, t, res_x, res_y)
 
-resolution = [1920 1080];   % pixels
+if nargin == 2
+  res_x = 3840;
+  res_y = 2160;
+end
+
+resolution = [res_x res_y];   % pixels
 sensorSize = [8 4.5];       % mm
 
 % Homogeneous coordinates of the corners of the squares on a calibration
