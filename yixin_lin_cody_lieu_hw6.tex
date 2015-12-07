@@ -24,16 +24,14 @@
 
 \section{Introduction}
 
-3D object reconstruction from a set of 2D images is fundamentally an ill-conditioned problem, due to its inverse nature. We investigate the effects of noise and other parameters on the success of reconstructing the original 3D object from stereo images. We quantify the correctness of the reconstructed 3D object by measuring three types of errors: motion, structure, and reprojection error.
+3D object reconstruction from a set of 2D images is fundamentally an ill-conditioned problem, due to its inverse nature. We investigate the effects of noise and other parameters on the success of reconstructing the original 3D object from stereo images. To this effect, we use the 8-point algorithm with the Hartley preprocessing\cite{hartley} (by using the canonical homogeneous coordinates). We quantify the accuracy of the reconstructed 3D object by measuring three types of errors: motion, structure, and reprojection error.
 
 Our goal in this paper is to investigate the following questions:
 \begin{itemize}
-\item Which types of error fail first when enough noise is added for the shape to be unrecognizable? More generally, how does varying the image noise affect the different types of errors?
-
+\item Which types of error fail first when enough noise is added for the shape to be unrecognizable? 
 \item What happens when we change the image resolution but keep \texttt{sigma} fixed?
 \end{itemize}
 
-\newpage
 \section{Progression of failure with increasing levels of noise}
 
 % Explanation of problem
@@ -82,7 +80,6 @@ After this, we also drew the reconstructed figures for choice \texttt{sigma} (Fi
 % Error plots (results)
 % INCLUDE UNITS
 
-\newpage
 \subsection{Data}
 \begin{center}
 	\begin{center}Figure 1. Motion error\end{center}
@@ -90,7 +87,6 @@ After this, we also drew the reconstructed figures for choice \texttt{sigma} (Fi
 	\includegraphics[width=.7\textwidth,keepaspectratio]{rotation_motion_error.png}
 	\begin{center}Figure 2. Structure error\end{center}
 	\includegraphics[width=.7\textwidth,keepaspectratio]{structure_error.png}
-	\newpage
 
 	\begin{center}Figure 3. Reprojection error\end{center}
 	\includegraphics[width=.7\textwidth,keepaspectratio]{reprojection_error.png}
@@ -106,7 +102,9 @@ Clearly, there is a severe drop in quality of the reconstructed object after \te
 
 As we can see from the error plots, there is an inflection point around 3.25 where motion error (especially translation error) begins to climb drastically. This is followed immediately by structure error, which also has a similar inflection point. Finally, there is a slight inflection point in reprojection error, which is relatively delayed compared to the other errors (around \texttt{sigma}=4.25).
 
-Interestingly, all of the error rates drop at around \texttt{sigma}=2.7, which is especially pronounced in translation motion and reprojection errors.
+
+
+
 
 % Things learned
 
@@ -116,16 +114,12 @@ Interestingly, all of the error rates drop at around \texttt{sigma}=2.7, which i
 
 
 
-\newpage
 \section{Effects of modifying image resolution}
 
-\newpage
 \section{Conclusion}
 
-\newpage
 
 
-\newpage
 \begin{thebibliography}{99}
 \bibitem{hartley}
 	Hartley, Richard. ``In defense of the eight-point algorithm.'' Pattern Analysis and Machine Intelligence, IEEE Transactions on 19, no. 6 (1997): 580-593.
