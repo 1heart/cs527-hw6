@@ -1,8 +1,8 @@
 function [b, c, img] = world(side, t, res_x, res_y)
 
 if nargin == 2
-  res_x = 3840;
-  res_y = 2160;
+  res_x = 1920;
+  res_y = 1080;
 end
 
 resolution = [res_x res_y];   % pixels

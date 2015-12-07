@@ -31,34 +31,34 @@ X = [box(1).X, box(2).X];
 K1 = camera(1).Ks * camera(1).Kf;
 K2 = camera(2).Ks * camera(2).Kf;
 
-sigmaVals2 = 0:.25:5; % Breaks down completely at 1.5
+sigmaVals2 = 0:.25:5; % Breaks down completely at 4
 
 eR_Arr = zeros(size(sigmaVals2));
 et_Arr = zeros(size(sigmaVals2));
 eP_Arr = zeros(size(sigmaVals2));
 eImg_Arr = zeros(size(sigmaVals2));
 
-for i = 1:size(sigmaVals2, 2)
-  img2 = addNoise(img, sigmaVals2(i));
-  % showImages(img2, camera, 2*i - 1);
+% for i = 1:size(sigmaVals2, 2)
+%   img2 = addNoise(img, sigmaVals2(i));
+%   % showImages(img2, camera, 2*i - 1);
 
-  x1 = K1 \ [img2(1, 1).x, img2(2, 1).x];
-  x2 = K2 \ [img2(1, 2).x, img2(2, 2).x];
+%   x1 = K1 \ [img2(1, 1).x, img2(2, 1).x];
+%   x2 = K2 \ [img2(1, 2).x, img2(2, 2).x];
 
-  [GComputed, XComputed] = longuetHiggins(x1, x2);
-  boxComputed = replaceShape(box, camera(1).G \ XComputed);
+%   [GComputed, XComputed] = longuetHiggins(x1, x2);
+%   boxComputed = replaceShape(box, camera(1).G \ XComputed);
 
-  % fig = 2 * i - 1;
-  % figure(fig)
-  % showStructure(box, 'True Structure');
+%   % fig = 2 * i - 1;
+%   % figure(fig)
+%   % showStructure(box, 'True Structure');
 
-  fig = 2 * i;
-  figure(fig)
-  showStructure(boxComputed, 'Reconstructed Structure');
+%   fig = 2 * i;
+%   figure(fig)
+%   showStructure(boxComputed, 'Reconstructed Structure');
 
-  placeFigures
+%   placeFigures
 
-end
+% end
 
 for i = 1:size(sigmaVals2, 2)
   for j = 1:n
@@ -89,26 +89,32 @@ et_Arr = et_Arr / n;
 eP_Arr = eP_Arr / n;
 eImg_Arr = eImg_Arr / n;
 
+nString = strcat('(n = ', int2str(n),  ' )');
+
 % Motion error
 % Translation and Rotation Error are in degrees, separate plot
-figure
-plot(sigmaVals2,eR_Arr, sigmaVals2, et_Arr);
-title('Graph of Motion Error (n = 150)');
+subplot(2, 2, 1)
+plot(sigmaVals2,eR_Arr);
+title(strcat('Graph of Rotation Motion Error ', nString));
 ylabel('Error (degrees)');
 xlabel('Sigma value');
-legend('Rotation error','Translation error');
+% legend('Rotation error','Translation error');
+subplot(2, 2, 2)
+plot(sigmaVals2,et_Arr);
+title(strcat('Graph of Translational Motion Error ', nString));
+ylabel('Error (degrees)');
+xlabel('Sigma value');
+% legend('Rotation error','Translation error');
 
 % Structure error
-
-figure
+subplot(2, 2, 3)
 plot(sigmaVals2, eP_Arr);
 title('Graph of Structure Error (n = 150)');
 xlabel('Sigma value')
 ylabel('Error (length units per point)');
 
-
 % Reprojection error
-figure
+subplot(2, 2, 4)
 plot(sigmaVals2, eImg_Arr);
 title('Graph of Reprojection Error (n = 150)');
 xlabel('Sigma value')
