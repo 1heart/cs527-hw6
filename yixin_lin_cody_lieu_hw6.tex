@@ -24,11 +24,14 @@
 
 \section{Introduction}
 
+3D object reconstruction from a set of 2D images is fundamentally an ill-conditioned problem, due to its inverse nature. We investigate the effects of noise and other parameters on the success of reconstructing the original 3D object from stereo images. We quantify the correctness of the reconstructed 3D object by measuring three types of errors: motion, structure, and reprojection error.
+
 Our goal in this paper is to investigate the following questions:
+\begin{itemize}
+\item Which types of error fail first when enough noise is added for the shape to be unrecognizable? More generally, how does varying the image noise affect the different types of errors?
 
-First, which types of error fail first when enough noise is added for the shape to be unrecognizable?
-
-Second, what happens when we change the image resolution but keep \texttt{sigma} fixed?
+\item What happens when we change the image resolution but keep \texttt{sigma} fixed?
+\end{itemize}
 
 \newpage
 \section{Progression of failure with increasing levels of noise}
@@ -66,7 +69,7 @@ The experiment we ran was to run the following procedure, in which a subroutine 
   \item Create a 3D world, with object (Gaussian noise \texttt{sigma} = 0), two cameras, and the resulting images
   \item Compute the true transformation between the camera reference frames
   \item Compute the true structure
-  \item Subroutine for each sigma \texttt{0:.25:4}
+  \item Subroutine for each \texttt{sigma} in range \texttt{0:.25:4}
   \begin{itemize}
   	\item Add noise to the original image with \texttt{sigma}
   	\item Compute the resulting transformation figure
@@ -93,22 +96,6 @@ After this, we also drew the reconstructed figures for choice \texttt{sigma} (Fi
 	\includegraphics[width=.7\textwidth,keepaspectratio]{reprojection_error.png}
 
 	\includegraphics[width=\textwidth,keepaspectratio]{reconstructed_objects.png}
-
-	% \begin{center}Figure 4. Reconstructed objects for \texttt{sigma}=0\end{center}
-	% \includegraphics[width=.5\textwidth]{0sigma.png}
-	% \newpage
-	% \begin{center}Figure 5. Reconstructed objects for \texttt{sigma}=1\end{center}
-	% \includegraphics[width=.5\textwidth]{1sigma.png}
-	% \begin{center}Figure 6. Reconstructed objects for \texttt{sigma}=2\end{center}
-	% \includegraphics[width=.5\textwidth]{2sigma.png}
-	% \begin{center}Figure 7. Reconstructed objects for \texttt{sigma}=3\end{center}
-	% \includegraphics[width=.5\textwidth]{3sigma.png}
-	% \newpage
-	% \begin{center}Figure 8. Reconstructed objects for \texttt{sigma}=4\end{center}
-	% \includegraphics[width=.5\textwidth]{4sigma.png}
-	% \begin{center}Figure 9. Reconstructed objects for \texttt{sigma}=5\end{center}
-	% \includegraphics[width=.5\textwidth]{5sigma.png}
-
 \end{center}
 
 % Conclusions
