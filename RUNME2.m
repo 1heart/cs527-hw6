@@ -112,11 +112,20 @@ nString = strcat('(n = ', int2str(n),  ' )');
 % Motion error
 % Translation and Rotation Error are in degrees, separate plot
 figure
-plot(sigmaVals,eR_Arr, sigmaVals, et_Arr);
-title(strcat('Graph of Motion Error ', nString));
+plot(sigmaVals,eR_Arr);
+title(strcat('Graph of Rotation Motion Error ', nString));
 ylabel('Error (degrees)');
 xlabel('Sigma value');
-legend('Rotation error','Translation error');
+% legend('Rotation error','Translation error');
+
+figure
+plot(sigmaVals,et_Arr);
+title(strcat('Graph of Translational Motion Error ', nString));
+ylabel('Error (degrees)');
+xlabel('Sigma value');
+% legend('Rotation error','Translation error');
+
+
 
 % Structure error
 
