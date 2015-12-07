@@ -42,7 +42,7 @@ eImg_Arr = zeros(size(sigmaVals));
 e1_Arr = zeros(size(sigmaVals));
 e2_Arr = zeros(size(sigmaVals));
 
-sigmaVals2 = 0:.5:4;
+sigmaVals2 = 0:1:4;
 for i = 1:size(sigmaVals2, 2)
   img2 = addNoise(img, sigmaVals2(i));
   % showImages(img2, camera, 2*i - 1);
@@ -66,39 +66,32 @@ for i = 1:size(sigmaVals2, 2)
 end
 
 
-% img2 = addNoise(img, 0.0);
-% showImages(img2, camera, 1);
-% img2 = addNoise(img, 2.0);
-% showImages(img2, camera, 1);
-% img2 = addNoise(img, 4.0);
-% showImages(img2, camera, 3);
+for i = 1:size(sigmaVals, 2)
+  for j = 1:30
+    curImg = addNoise(img, sigmaVals(i));
+    imgArr{i} = curImg;
+    x1 = K1 \ [curImg(1, 1).x, curImg(2, 1).x];
+    x2 = K2 \ [curImg(1, 2).x, curImg(2, 2).x];
+    % Compute the transformation between the reference systems of the two
+    % cameras and the scene structure in the first camera reference system,
+    % using the eight-point algorithm
+    [GComputed, XComputed] = longuetHiggins(x1, x2);
 
-% for i = 1:size(sigmaVals, 2)
-%   for j = 1:30
-%     curImg = addNoise(img, sigmaVals(i));
-%     imgArr{i} = curImg;
-%     x1 = K1 \ [curImg(1, 1).x, curImg(2, 1).x];
-%     x2 = K2 \ [curImg(1, 2).x, curImg(2, 2).x];
-%     % Compute the transformation between the reference systems of the two
-%     % cameras and the scene structure in the first camera reference system,
-%     % using the eight-point algorithm
-%     [GComputed, XComputed] = longuetHiggins(x1, x2);
+    % Measure and report errors before bundle adjustment
+    % fprintf(1, '\nAfter running the eight-point algorithm:\n');
+    [eR, et] = motionError(GComputed, G, verbose);
 
-%     % Measure and report errors before bundle adjustment
-%     % fprintf(1, '\nAfter running the eight-point algorithm:\n');
-%     [eR, et] = motionError(GComputed, G, verbose);
+    eR_Arr(i) = eR_Arr(i) + eR;
+    et_Arr(i) = et_Arr(i) + et;
 
-%     eR_Arr(i) = eR_Arr(i) + eR;
-%     et_Arr(i) = et_Arr(i) + et;
-
-%     eP_Arr(i) = eP_Arr(i) + structureError(XComputed, X, verbose);
-%     [eImg, e1, e2] = reprojectionError(GComputed, XComputed, ...
-%         x1, x2, camera, verbose);
-%     eImg_Arr(i) = eImg_Arr(i) + eImg;
-%     % e1_Arr(i) = e1_Arr(i) + e1;
-%     % e2_Arr(i) = e2_Arr(i) + e2;
-%   end
-% end
+    eP_Arr(i) = eP_Arr(i) + structureError(XComputed, X, verbose);
+    [eImg, e1, e2] = reprojectionError(GComputed, XComputed, ...
+        x1, x2, camera, verbose);
+    eImg_Arr(i) = eImg_Arr(i) + eImg;
+    % e1_Arr(i) = e1_Arr(i) + e1;
+    % e2_Arr(i) = e2_Arr(i) + e2;
+  end
+end
 
 eR_Arr = eR_Arr / 30;
 et_Arr = et_Arr / 30;
@@ -107,9 +100,31 @@ eImg_Arr = eImg_Arr / 30;
 e1_Arr = e1_Arr / 30;
 e2_Arr = e2_Arr / 30;
 
-
-
+% Motion error
 % Translation and Rotation Error are in degrees, separate plot
+figure
+plot(sigmaVals,eR_Arr, sigmaVals, et_Arr);
+title('Graph of Motion Error (n = 30)');
+ylabel('Error (degrees)');
+xlabel('Sigma value');
+legend('Rotation error','Translation error');
+
+% Structure error
+
+figure
+plot(sigmaVals, eP_Arr);
+title('Graph of Structure Error (n = 30)');
+xlabel('Sigma value')
+ylabel('Error (length units per point)');
+
+
+% Reprojection error
+figure
+plot(sigmaVals, eImg_Arr);
+title('Graph of Reprojection Error (n = 30)');
+xlabel('Sigma value')
+ylabel('Error (pixels per point)')
+
 
 
 
