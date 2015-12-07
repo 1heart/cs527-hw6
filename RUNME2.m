@@ -49,28 +49,28 @@ eImg_Arr = zeros(size(sigmaVals));
 e1_Arr = zeros(size(sigmaVals));
 e2_Arr = zeros(size(sigmaVals));
 
-sigmaVals2 = 0:1:maxSigma;
-for i = 1:size(sigmaVals2, 2)
-  img2 = addNoise(img, sigmaVals2(i));
-  % showImages(img2, camera, 2*i - 1);
+% sigmaVals2 = 0:1:maxSigma;
+% for i = 1:size(sigmaVals2, 2)
+%   img2 = addNoise(img, sigmaVals2(i));
+%   % showImages(img2, camera, 2*i - 1);
 
-  x1 = K1 \ [img2(1, 1).x, img2(2, 1).x];
-  x2 = K2 \ [img2(1, 2).x, img2(2, 2).x];
+%   x1 = K1 \ [img2(1, 1).x, img2(2, 1).x];
+%   x2 = K2 \ [img2(1, 2).x, img2(2, 2).x];
 
-  [GComputed, XComputed] = longuetHiggins(x1, x2);
-  boxComputed = replaceShape(box, camera(1).G \ XComputed);
+%   [GComputed, XComputed] = longuetHiggins(x1, x2);
+%   boxComputed = replaceShape(box, camera(1).G \ XComputed);
 
-  % fig = 2 * i - 1;
-  % figure(fig)
-  % showStructure(box, 'True Structure');
+%   % fig = 2 * i - 1;
+%   % figure(fig)
+%   % showStructure(box, 'True Structure');
 
-  fig = 2 * i;
-  figure(fig)
-  showStructure(boxComputed, 'Reconstructed Structure');
+%   fig = 2 * i;
+%   figure(fig)
+%   showStructure(boxComputed, 'Reconstructed Structure');
 
-  placeFigures
+%   placeFigures
 
-end
+% end
 
 
 for i = 1:size(sigmaVals, 2)
@@ -109,85 +109,33 @@ e2_Arr = e2_Arr / n;
 
 nString = strcat('(n = ', int2str(n),  ' )');
 
+figure
 % Motion error
 % Translation and Rotation Error are in degrees, separate plot
-figure
+subplot(2, 2, 1)
 plot(sigmaVals,eR_Arr);
 title(strcat('Graph of Rotation Motion Error ', nString));
 ylabel('Error (degrees)');
 xlabel('Sigma value');
 % legend('Rotation error','Translation error');
 
-figure
+subplot(2, 2, 2)
 plot(sigmaVals,et_Arr);
 title(strcat('Graph of Translational Motion Error ', nString));
 ylabel('Error (degrees)');
 xlabel('Sigma value');
 % legend('Rotation error','Translation error');
 
-
-
+subplot(2, 2, 3)
 % Structure error
-
-figure
 plot(sigmaVals, eP_Arr);
 title(strcat('Graph of Structure Error ', nString));
 xlabel('Sigma value')
 ylabel('Error (length units per point)');
 
-
+subplot(2, 2, 4)
 % Reprojection error
-figure
 plot(sigmaVals, eImg_Arr);
 title(strcat('Graph of Reprojection Error ', nString));
 xlabel('Sigma value')
 ylabel('Error (pixels per point)')
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-% fig = 1;
-% if verbose
-%     fprintf(1, 'Image noise standard deviation %.2g pixels\n', sigma);
-    
-%     % Display the images
-%     showImages(img, camera, fig);
-%     fig = fig + 2;
-% end
-
-
-
-
-
-
-
-% % Display reprojection errors
-% figure(fig)
-% showReprojectionError(e1, e2, x1, x2, camera, img, ...
-%     'With the eight-point algorithm');
-
-% % Display true and reconstructed scene structure in world coordinates
-% boxComputed = replaceShape(box, camera(1).G \ XComputed);
-
-% fig = fig + 1;
-% figure(fig)
-% showStructure(box, 'True Structure');
-
-% fig = fig + 1;
-% figure(fig)
-% showStructure(boxComputed, 'Reconstructed Structure');
-
-% placeFigures
