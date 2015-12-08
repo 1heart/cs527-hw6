@@ -108,10 +108,16 @@ The results are summarized in Table 1.
 	\includegraphics[width=\textwidth,keepaspectratio]{reconstructed_objects.png}
 \end{center}
 
+% TODO: graph reprojection error 
+
+\begin{center}
+	Figure 10, 11, 12. Reprojection error scatterplots (in pixels)
+	\includegraphics[width=\textwidth, keepaspectratio]{error_scatterplots.png}
+\end{center}
 
 \begin{tabular}{ |p{3cm}|p{3cm}|p{3cm}|p{3cm}|  }
  \hline
- \multicolumn{4}{|c|}{Table 1: Errors for Randomly Generated Image Points for n = 1000} \\
+ \multicolumn{4}{|c|}{Table 1. Errors for Randomly Generated Image Points for n = 1000} \\ \hline
  \hline
  Rotation Error & Translational Error & Structure Error & Reprojection Error\\
  \hline
@@ -119,7 +125,6 @@ The results are summarized in Table 1.
  \hline
 \end{tabular}
 
-TODO: graph reprojection error 
 
 % Conclusions
 
@@ -148,7 +153,7 @@ TODO: why reprojection is only non-sigmoid
 
 TODO: reprojection error changes (0 -- $>$ straight line -- $>$ random points)
 
-The reprojection error plots for different sigma are also insightful in showing the progression of reprojection error as the reconstructed image experiences failure. When sigma is 0, the plot includes all points that are essentially 0-- indicating an almost perfect reconstruction of the reprojected image. However, as sigma gets larger but below the inflection point talked about above, the errors all lie on a straight line-- since the size of the displacements depend roughly \textit{only on distance from the camera} (because of the nature of projecting a 3D object down onto 2D, where farther points seem smaller). Finally, when the sigma reaches the point where catastrophic failure occurs, the displacements become a random cluster around the origin (the reprojected image now no longer has much correlation to the original object). TODO: reference figures
+The reprojection error plots for different sigma are also insightful in showing the progression of reprojection error as the reconstructed image experiences failure. When sigma is 0 (Figure 10), the plot includes all points that are essentially 0-- indicating an almost perfect reconstruction of the reprojected image. However, as sigma gets larger but below the inflection point talked about above (Figure 11), the errors all lie on a straight line-- since the size of the displacements depend roughly \textit{only on distance from the camera} (because of the nature of projecting a 3D object down onto 2D, where farther points seem smaller). Finally, when the sigma reaches the point where catastrophic failure occurs (Figure 12), the displacements become a random cluster around the origin (the reprojected image now no longer has much correlation to the original object). % TODO: reference figures
 
 
 
