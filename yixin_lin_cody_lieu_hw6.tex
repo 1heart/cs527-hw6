@@ -24,7 +24,7 @@
 
 \section{Introduction}
 
-3D object reconstruction from a set of 2D images is fundamentally an ill-conditioned problem, due to its inverse nature. We investigate the effects of noise and other parameters on the success of reconstructing the original 3D object from stereo images. To this effect, we use the 8-point algorithm with the Hartley preprocessing\cite{hartley} (by using the canonical homogeneous coordinates). We quantify the accuracy of the reconstructed 3D object by measuring three types of errors: motion, structure, and reprojection error.
+3D object reconstruction from a set of 2D images is fundamentally an ill-conditioned problem, due to its inverse nature. We investigate the effects of noise and other parameters on the success of reconstructing the original 3D object from stereo images. To this effect, we use the eight-point algorithm with the Hartley preprocessing\cite{hartley} (by using the canonical homogeneous coordinates). We quantify the accuracy of the reconstructed 3D object by measuring three types of errors: motion, structure, and reprojection error.
 
 Our goal in this paper is to investigate the following questions:
 \begin{itemize}
@@ -32,12 +32,12 @@ Our goal in this paper is to investigate the following questions:
 \item What happens when we change the image resolution but keep sigma fixed?
 \end{itemize}
 
-\section{Progression of failure with increasing levels of noise}
+\section{Increasing levels of noise and the effect on error types}
 
 % Explanation of problem
 \subsection{Introduction}
 
-The software provided creates a simulated world with a square object (with multiple colored squares on each side) and two cameras, adds Gaussian noise to the image coordinates, and runs the eight-point algorithm for 3-d reconstruction. Because reconstruction is a ill-conditioned/ill-posed problem (due to its inverse nature), small errors in the data will often result in large errors in the 3D reconstruction. 
+The software provided creates a simulated world with a cubic object (with multiple colored squares on each side) and two cameras, adds Gaussian noise to the image coordinates, and runs the eight-point algorithm for 3-d reconstruction. Because reconstruction is a ill-conditioned/ill-posed problem (due to its inverse nature), small errors in the data will often result in large errors in the 3D reconstruction. 
 
 We investigate the effect of pseudo-random Gaussian noise on different types of errors, especially as the image become so distorted that the reconstructed shape becomes unrecognizable.
 
@@ -59,7 +59,7 @@ We pose the question: at the point where enough noise has been added so that the
 
 \subsection{Methods}
 
-The experiment we ran was to run the following procedure, in which a subroutine was applied on a range of sigmas from \texttt{0:.25:5}, with n = 150 for each sigma; we recorded the average errors for each, as shown in Figures 1-3.
+We ran the experiment according to the following procedure, in which a subroutine was applied on a range of sigmas from \texttt{0:.25:5}, with n = 150 for each sigma; we recorded the average errors for each, as shown in Figures 1-3.
 
 \subsection*{Procedure}
 
@@ -69,7 +69,7 @@ The experiment we ran was to run the following procedure, in which a subroutine 
   \item Create a 3D world, with object (Gaussian noise sigma = 0), two cameras, and the resulting images
   \item Compute the true transformation between the camera reference frames
   \item Compute the true structure
-  \item Subroutine for each sigma in range \texttt{0:.25:4}
+  \item Run subroutine for each sigma in range \texttt{0:.25:4}
   \begin{itemize}
   	\item Add noise to the original image with sigma
   	\item Compute the resulting transformation figure
@@ -102,11 +102,13 @@ The results are summarized in Table 1.
 
 \subsection{Data}
 \begin{center}
-	\begin{center}Figures 1, 2, 3, and 4. Rotation, Translation, Structure, and Reprojection Error as a function of Sigma Value\end{center}
+	\begin{center}Figures 1.1, 1.2, 2, and 3. Motion (rotation), Motion (translation), Structure, and Reprojection Error as a function of Sigma Value\end{center}
 	\includegraphics[width=.7\textwidth,keepaspectratio]{experiment_1_error_plots.png}
 
 	\includegraphics[width=\textwidth,keepaspectratio]{reconstructed_objects.png}
 \end{center}
+
+\textit{(We plotted rotation and translational separately despite them both measured in degrees, because rotational error had a low range and therefore the sigmoid characteristic was not easily observed.)}
 
 % TODO: graph reprojection error 
 
@@ -136,13 +138,13 @@ As we can see from the error plots, there is an inflection point around 3.25 whe
 
 % TODO: explain why sigmoid (linear until inflection point is because reconstruction fails)
 
-Why is the graph approximately linear before the inflection point? As we increase sigma, the Gaussian noise-generating function gets linearly scaled, making the slight errors increase linearly (on average).
+Why are the motion and structure graphs approximately linear before the inflection point? As we increase sigma, the Gaussian noise-generating function gets linearly scaled, making the slight errors increase linearly (on average).
 
 Why is there an inflection point around sigma=3.25? That is the point where there is enough error for catastrophic failure in the reconstructed object such that it becomes unrecognizable. Again, this point exists because 3D reconstruction is an ill-posed problem, where minor errors in input result in massive failures in output. This inflection point is exactly that amount of errors. As obvious in figure 8 and 9, the object is completely unrecognizable after this inflection point.
 
 % TODO: explain why tapers off 
 
-After a certain point, however, the image has enough noise so that it is essentially a random image (one with random values for pixels), uncorrelated with the original object. This is essentially the maximum amount of average error attainable, and is the reason why the error rate tapers off (at around 10 degrees for rotation error, 80 degrees for translation error, and 0.12 unit lengths per point for structural error, according to figures 1-3). To confirm this, we devised the experiment in the section labeled ``Errors for Randomly Generated Image Points for n = 1000'', where we took the average errors for \textit{1000 randomly generated point clouds} after attempted 3D reconstruction. Evidently, the translational and structure error were clearly approximately to the asymptotes of figure 2 and 3 respectively, which showed that at large enough sigma values (approx. 6 and above), the reconstructed figures were \textit{no better than random noise} in terms of correlation with the original object.
+After a certain point, however, the image has enough noise so that it is essentially a random image (one with random values for pixels), uncorrelated with the original object. This is essentially the maximum amount of average error attainable, and is the reason why the error rate tapers off (at around 10 degrees for rotation error, 80 degrees for translation error, and 0.12 unit lengths per point for structural error, according to figures 1-3). To confirm this, we devised the experiment in the section labeled ``Errors for Randomly Generated Image Points for n = 1000'', where we took the average errors for \textit{1000 randomly generated point clouds} after attempted 3D reconstruction. Evidently, the translational and structure error were clearly near-equal to the asymptotes of figure 2 and 3 respectively, which showed that at large enough sigma values (approx. 6 and above), the reconstructed figures were \textit{no better than random noise} in terms of correlation with the original object.
 
 % TODO: explain this with data
 
@@ -170,6 +172,12 @@ The reprojection error plots for different sigma are also insightful in showing 
 \section{Effects of modifying image resolution}
 
 \subsection{Introduction}
+
+As we know, the Gaussian random noise generator uses sigma, which is defined in terms of pixels. We investigate the question of the effect of noise with varying image resolution but fixed sigma: because sigma is defined in pixels, modifying the number of pixels by resizing will have a noticeable effect on the effect of noise.
+
+\subsection{Methods}
+
+We modified world to accept optional arguments for resolution, and thereby resized the image. We tested both half the resolution and double the resolution of the image, running our subroutine with n=150 to gather information on the error plots for each resolution.
 
 \subsection{Data}
 \begin{center}
@@ -204,8 +212,10 @@ This is because the sigma value scales the randomly generated values in the same
 
 \section{Conclusion}
 
-In the first experiment, we learned that the rotation, translation, and structure error rates have a sigmoid relationship with respect to the amount of noise added to the image. The initial exponential relationship makes sense as reconstruction is an ill-posed problem, so increasing levels of noise are expected to have compounding effects on error rate. The inflection point was interpreted to represent the level of noise with which the image becomes unrecognizable and therefore un-reconstructable. Arbitrary image points, generated using randn, yielded an average translational and structure error of 64.2218 and 0.1249 respectively. These error rates seem to have a high correlation with the error rates of the inflection points in Figures 2 and 3, which further corroborates our assumption. The resulting rotation error, however, is much larger than the error rate of the inflection point in Figure 1. The reprojection error, shown in Figure 4, is the only error that doesn't have a sigmoid relationship with sigma value, instead, increasing approximately linearly until a breaking point where it then begins to vary wildly. This high variance could potentially account for the huge reprojection error resulting from the random images test.
-The error scatter plots were also calculated for sigma values of 0.0, 1.0, and 6.0. These plots align with our expectations. Essentially all of the points for sigma value 0.0 are close to 0, indicating that the reconstructed image is very close to the original image. The plot for sigma value 1.0 showed a linear relationship between the points. The points representing the image points with greatest deviation from the original image were interpreted to be the points farthest from the camera view as they would intuitively be more prone to deviation when being reconstructed since the camera cannot record as much significant data from that distance. The plot for sigma value 6.0 corresponds to a reconstructed image with no resemblance to the original image, hence the lack of any perceivable relationship between the points.
+In the first experiment, we learned that the rotation, translation, and structure error rates have a sigmoid relationship with respect to the amount of noise added to the image. In the second, we explored the relationship between resolution and different error rates, comparing values for fixed sigma.
+
+% The initial exponential relationship makes sense as reconstruction is an ill-posed problem, so increasing levels of noise are expected to have compounding effects on error rate. The inflection point was interpreted to represent the level of noise with which the image becomes unrecognizable and therefore un-reconstructable. Arbitrary image points, generated using randn, yielded an average translational and structure error of 64.2218 and 0.1249 respectively. These error rates seem to have a high correlation with the error rates of the inflection points in Figures 2 and 3, which further corroborates our assumption. The resulting rotation error, however, is much larger than the error rate of the inflection point in Figure 1. The reprojection error, shown in Figure 3, is the only error that doesn't have a sigmoid relationship with sigma value, instead, increasing approximately linearly until a breaking point where it then begins to vary wildly. This high variance could potentially account for the huge reprojection error resulting from the random images test.
+% The error scatter plots were also calculated for sigma values of 0.0, 1.0, and 6.0. These plots align with our expectations. Essentially all of the points for sigma value 0.0 are close to 0, indicating that the reconstructed image is very close to the original image. The plot for sigma value 1.0 showed a linear relationship between the points. The points representing the image points with greatest deviation from the original image were interpreted to be the points farthest from the camera view as they would intuitively be more prone to deviation when being reconstructed since the camera cannot record as much significant data from that distance. The plot for sigma value 6.0 corresponds to a reconstructed image with no resemblance to the original image, hence the lack of any perceivable relationship between the points.
 
 \begin{thebibliography}{99}
 \bibitem{hartley}
