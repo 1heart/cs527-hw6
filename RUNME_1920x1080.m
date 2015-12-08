@@ -31,7 +31,7 @@ X = [box(1).X, box(2).X];
 K1 = camera(1).Ks * camera(1).Kf;
 K2 = camera(2).Ks * camera(2).Kf;
 
-sigmaVals2 = 0:.25:5; % Breaks down completely at 4
+sigmaVals2 = 0:.25:10; % Breaks down completely at 4
 
 eR_Arr = zeros(size(sigmaVals2));
 et_Arr = zeros(size(sigmaVals2));
