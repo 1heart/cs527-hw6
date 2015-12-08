@@ -90,6 +90,7 @@ We interpreted the inflection points as representing the sigma values that added
 	\includegraphics[width=\textwidth,keepaspectratio]{reconstructed_objects.png}
 \end{center}
 
+
 \begin{tabular}{ |p{3cm}|p{3cm}|p{3cm}|p{3cm}|  }
  \hline
  \multicolumn{4}{|c|}{Table 1: Errors for Randomly Generated Image Points for n = 1000} \\
@@ -100,6 +101,8 @@ We interpreted the inflection points as representing the sigma values that added
  \hline
 \end{tabular}
 
+TODO: graph reprojection error 
+
 % Conclusions
 
 \subsection{Conclusions}
@@ -108,7 +111,25 @@ Clearly, there is a severe drop in quality of the reconstructed object after \te
 
 As we can see from the error plots, there is an inflection point around 3.25 where motion error (especially translation error) begins to climb drastically. This is followed immediately by structure error, which also has a similar inflection point. Finally, there is a slight inflection point in reprojection error, which is relatively delayed compared to the other errors (around \texttt{sigma}=4.25).
 
+% TODO: explain why sigmoid (linear until inflection point is because reconstruction fails)
 
+Why is the graph approximately linear before the inflection point? As we increase \texttt{sigma}, the Gaussian noise-generating function gets linearly scaled, making the slight errors increase linearly (on average).
+
+Why is there an inflection point around \texttt{sigma}=3.25? That is the point where there is enough error for catastrophic failure in the reconstructed object such that it becomes unrecognizable. Again, this point exists because 3D reconstruction is an ill-posed problem, where minor errors in input result in massive failures in output. This inflection point is exactly that amount of errors. As obvious in figure 8 and 9 (which correspond to points after this inflection point), the object is completely unrecognizable.
+
+% TODO: explain why tapers off 
+
+After a certain point, however, the image has enough noise so that it is essentially a random image (one with random values for pixels), uncorrelated with the original object. This is essentially the maximum amount of average error attainable, and is the reason why the error rate tapers off (at around 10 degrees for rotation error, 80 degrees for translation error, and 0.12 unit lengths per point for structural error, according to figures 1-3). TODO: explain this with data
+
+
+
+TODO: why reprojection is only non-sigmoid
+
+
+
+TODO: reprojection error changes (0 -- > straight line -- > random points)
+
+The reprojection error plots for different \texttt{sigma} are also insightful in showing the progression of reprojection error as the reconstructed image experiences failure. When sigma is 0, the plot includes all points that are essentially 0-- indicating an almost perfect reconstruction of the reprojected image. However, as sigma gets larger but below the inflection point talked about above, the errors all lie on a straight line-- since the size of the displacements depend roughly \textit{only on distance from the camera} (because of the nature of projecting a 3D object down onto 2D, where farther points seem smaller). Finally, when the sigma reaches the point where catastrophic failure occurs, the displacements become a random cluster around the origin (the reprojected image now no longer has much correlation to the original object). TODO: reference figures
 
 
 
@@ -137,6 +158,16 @@ As we can see from the error plots, there is an inflection point around 3.25 whe
 
 
 \end{center}
+
+\subsection{Conclusions}
+
+TODO: higher res --> lower error (because in pixels)
+
+
+TODO: what relationship is (O(n)), direct scaling
+
+TODO: explain why (Gaussian sigma affects both dimensions)
+
 
 \section{Conclusion}
 
