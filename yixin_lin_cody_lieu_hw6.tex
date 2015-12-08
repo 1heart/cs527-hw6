@@ -147,11 +147,13 @@ After a certain point, however, the image has enough noise so that it is essenti
 % TODO: explain this with data
 
 
-TODO: why reprojection is only non-sigmoid
+% TODO: why reprojection is only non-sigmoid
+
+Reprojection, however, does not follow this trend of smoothing out. In fact, this is the only error plot to not follow the sigmoid function; after a certain point, there are massive oscillations in the graph (especially see reprojection error in Figures 13, 14, 15). We hypothesize that this is caused by the reprojection down to 2D, which destroys information in an unbounded way (in fact, some points may not even be visible in the camera).
 
 
 
-TODO: reprojection error changes (0 -- $>$ straight line -- $>$ random points)
+% TODO: reprojection error changes (0 -- $>$ straight line -- $>$ random points)
 
 The reprojection error plots for different sigma are also insightful in showing the progression of reprojection error as the reconstructed image experiences failure. When sigma is 0 (Figure 10), the plot includes all points that are essentially 0-- indicating an almost perfect reconstruction of the reprojected image. However, as sigma gets larger but below the inflection point talked about above (Figure 11), the errors all lie on a straight line-- since the size of the displacements depend roughly \textit{only on distance from the camera} (because of the nature of projecting a 3D object down onto 2D, where farther points seem smaller). Finally, when the sigma reaches the point where catastrophic failure occurs (Figure 12), the displacements become a random cluster around the origin (the reprojected image now no longer has much correlation to the original object). % TODO: reference figures
 
@@ -171,13 +173,13 @@ The reprojection error plots for different sigma are also insightful in showing 
 
 \subsection{Data}
 \begin{center}
-	\begin{center}Figure 10. Error Plots for Resolution of 960x540\end{center}
+	\begin{center}Figure 13. Error Plots for Resolution of 960x540\end{center}
 	\includegraphics[width=.7\textwidth,keepaspectratio]{960x540_error_plots.png}
 	
-	\begin{center}Figure 11. Error Plots for Resolution of 1920x1080\end{center}
+	\begin{center}Figure 14. Error Plots for Resolution of 1920x1080\end{center}
 	\includegraphics[width=.7\textwidth,keepaspectratio]{1920x1080_error_plots.png}
 	
-	\begin{center}Figure 12. Error Plots for Resolution of 3840x2160\end{center}
+	\begin{center}Figure 15. Error Plots for Resolution of 3840x2160\end{center}
 	\includegraphics[width=.7\textwidth,keepaspectratio]{3840x2160_error_plots.png}
 
 
