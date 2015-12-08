@@ -4,7 +4,7 @@
 % TRIALS
 n = 150;
 % Max sigma
-maxSigma = 5;
+maxSigma = 8;
 % Step size
 stepSize = 0.25;
 
@@ -71,6 +71,7 @@ e2_Arr = zeros(size(sigmaVals));
 %   placeFigures
 
 % end
+
 
 
 for i = 1:size(sigmaVals, 2)

@@ -77,6 +77,8 @@ The experiment we ran was to run the following procedure, in which a subroutine 
 
 After this, we also drew the reconstructed figures for choice \texttt{sigma} (Figures 4-9), to demonstrate the effects of noise on the resulting reconstruction and to find out when the reconstructed object became unrecognizable.
 
+We interpreted the inflection points as representing the sigma values that added a level of noise to the image such that it is no longer reconstructable, essentially, when the image with noise added to it is no longer recognizable as the original image. To confirm our interpretation, we computed the rotation, translation, structure, and reprojection errors for random images by taking the img struct returned by world and setting all of the image points to random values using randn. The average errors were taken after 1,000 trials and are summarized in Table 1.
+
 % Error plots (results)
 % INCLUDE UNITS
 
@@ -87,6 +89,16 @@ After this, we also drew the reconstructed figures for choice \texttt{sigma} (Fi
 
 	\includegraphics[width=\textwidth,keepaspectratio]{reconstructed_objects.png}
 \end{center}
+
+\begin{tabular}{ |p{3cm}|p{3cm}|p{3cm}|p{3cm}|  }
+ \hline
+ \multicolumn{4}{|c|}{Table 1: Errors for Randomly Generated Image Points for n = 1000} \\
+ \hline
+ Rotation Error & Translational Error & Structure Error & Reprojection Error\\
+ \hline
+ 127.4189 & 64.2218 & 0.1249 & 4.2279e+04\\
+ \hline
+\end{tabular}
 
 % Conclusions
 
