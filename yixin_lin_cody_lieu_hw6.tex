@@ -29,7 +29,7 @@
 Our goal in this paper is to investigate the following questions:
 \begin{itemize}
 \item Which types of error fail first when enough noise is added for the shape to be unrecognizable? 
-\item What happens when we change the image resolution but keep \texttt{sigma} fixed?
+\item What happens when we change the image resolution but keep sigma fixed?
 \end{itemize}
 
 \section{Progression of failure with increasing levels of noise}
@@ -59,23 +59,23 @@ We pose the question: at the point where enough noise has been added so that the
 
 \subsection{Methods}
 
-The experiment we ran was to run the following procedure, in which a subroutine was applied on a range of \texttt{sigma}s from \texttt{0:.25:5}, with n = 150 for each \texttt{sigma}; we recorded the average errors for each, as shown in Figures 1-3.
+The experiment we ran was to run the following procedure, in which a subroutine was applied on a range of sigmas from \texttt{0:.25:5}, with n = 150 for each sigma; we recorded the average errors for each, as shown in Figures 1-3.
 
 \subsection*{Procedure}
 
 \begin{enumerate}
-  \item Create a 3D world, with object (Gaussian noise \texttt{sigma} = 0), two cameras, and the resulting images
+  \item Create a 3D world, with object (Gaussian noise sigma = 0), two cameras, and the resulting images
   \item Compute the true transformation between the camera reference frames
   \item Compute the true structure
-  \item Subroutine for each \texttt{sigma} in range \texttt{0:.25:4}
+  \item Subroutine for each sigma in range \texttt{0:.25:4}
   \begin{itemize}
-  	\item Add noise to the original image with \texttt{sigma}
+  	\item Add noise to the original image with sigma
   	\item Compute the resulting transformation figure
   	\item Measure and record motion, structure, and reprojection errors
   \end{itemize}
 \end{enumerate} 
 
-After this, we also drew the reconstructed figures for choice \texttt{sigma} (Figures 4-9), to demonstrate the effects of noise on the resulting reconstruction and to find out when the reconstructed object became unrecognizable.
+After this, we also drew the reconstructed figures for choice sigma (Figures 4-9), to demonstrate the effects of noise on the resulting reconstruction and to find out when the reconstructed object became unrecognizable.
 
 We interpreted the inflection points as representing the sigma values that added a level of noise to the image such that it is no longer reconstructable, essentially, when the image with noise added to it is no longer recognizable as the original image. To confirm our interpretation, we computed the rotation, translation, structure, and reprojection errors for random images by taking the img struct returned by world and setting all of the image points to random values using randn. The average errors were taken after 1,000 trials and are summarized in Table 1.
 
@@ -107,15 +107,15 @@ TODO: graph reprojection error
 
 \subsection{Conclusions}
 
-Clearly, there is a severe drop in quality of the reconstructed object after \texttt{sigma} reaches around 3.25, and the reconstructed object for \texttt{sigma}=4 (Figure 8) is completely unrecognizable.
+Clearly, there is a severe drop in quality of the reconstructed object after sigma reaches around 3.25, and the reconstructed object for sigma=4 (Figure 8) is completely unrecognizable.
 
-As we can see from the error plots, there is an inflection point around 3.25 where motion error (especially translation error) begins to climb drastically. This is followed immediately by structure error, which also has a similar inflection point. Finally, there is a slight inflection point in reprojection error, which is relatively delayed compared to the other errors (around \texttt{sigma}=4.25).
+As we can see from the error plots, there is an inflection point around 3.25 where motion error (especially translation error) begins to climb drastically. This is followed immediately by structure error, which also has a similar inflection point. Finally, there is a slight inflection point in reprojection error, which is relatively delayed compared to the other errors (around sigma=4.25).
 
 % TODO: explain why sigmoid (linear until inflection point is because reconstruction fails)
 
-Why is the graph approximately linear before the inflection point? As we increase \texttt{sigma}, the Gaussian noise-generating function gets linearly scaled, making the slight errors increase linearly (on average).
+Why is the graph approximately linear before the inflection point? As we increase sigma, the Gaussian noise-generating function gets linearly scaled, making the slight errors increase linearly (on average).
 
-Why is there an inflection point around \texttt{sigma}=3.25? That is the point where there is enough error for catastrophic failure in the reconstructed object such that it becomes unrecognizable. Again, this point exists because 3D reconstruction is an ill-posed problem, where minor errors in input result in massive failures in output. This inflection point is exactly that amount of errors. As obvious in figure 8 and 9 (which correspond to points after this inflection point), the object is completely unrecognizable.
+Why is there an inflection point around sigma=3.25? That is the point where there is enough error for catastrophic failure in the reconstructed object such that it becomes unrecognizable. Again, this point exists because 3D reconstruction is an ill-posed problem, where minor errors in input result in massive failures in output. This inflection point is exactly that amount of errors. As obvious in figure 8 and 9 (which correspond to points after this inflection point), the object is completely unrecognizable.
 
 % TODO: explain why tapers off 
 
@@ -129,7 +129,7 @@ TODO: why reprojection is only non-sigmoid
 
 TODO: reprojection error changes (0 -- > straight line -- > random points)
 
-The reprojection error plots for different \texttt{sigma} are also insightful in showing the progression of reprojection error as the reconstructed image experiences failure. When sigma is 0, the plot includes all points that are essentially 0-- indicating an almost perfect reconstruction of the reprojected image. However, as sigma gets larger but below the inflection point talked about above, the errors all lie on a straight line-- since the size of the displacements depend roughly \textit{only on distance from the camera} (because of the nature of projecting a 3D object down onto 2D, where farther points seem smaller). Finally, when the sigma reaches the point where catastrophic failure occurs, the displacements become a random cluster around the origin (the reprojected image now no longer has much correlation to the original object). TODO: reference figures
+The reprojection error plots for different sigma are also insightful in showing the progression of reprojection error as the reconstructed image experiences failure. When sigma is 0, the plot includes all points that are essentially 0-- indicating an almost perfect reconstruction of the reprojected image. However, as sigma gets larger but below the inflection point talked about above, the errors all lie on a straight line-- since the size of the displacements depend roughly \textit{only on distance from the camera} (because of the nature of projecting a 3D object down onto 2D, where farther points seem smaller). Finally, when the sigma reaches the point where catastrophic failure occurs, the displacements become a random cluster around the origin (the reprojected image now no longer has much correlation to the original object). TODO: reference figures
 
 
 
@@ -161,12 +161,19 @@ The reprojection error plots for different \texttt{sigma} are also insightful in
 
 \subsection{Conclusions}
 
-TODO: higher res --> lower error (because in pixels)
+% TODO: higher res --> lower error (because in pixels)
+
+Clearly, a higher resolution leads to a lower error for fixed sigma. Since sigma is given in pixels, it's obvious that increasing the resolution of the image (i.e. scaling the number of pixels per point) will lead to a lessened effect from the noise-generating function.
 
 
-TODO: what relationship is (O(n)), direct scaling
+% TODO: what relationship is (O(n)), direct scaling
 
-TODO: explain why (Gaussian sigma affects both dimensions)
+It is interesting to note, however, that the relationship is linear. Observe that the error values for (for example) sigma=1 in a resolution of 960x540 are approximately equal to sigma=2 for resolution 1920x1080 and sigma=4 for resolution 3840x2160. In fact, each plot of a certain resolution is simply the horizontal scaling of the plot of the image half its resolution. 
+
+% TODO: explain why (Gaussian sigma affects both dimensions)
+
+This is because the sigma value scales the randomly generated values in the same number of dimensions as the image (2), which means that an increase of sigma is offset by a proportional increase in both dimensions of resolution (i.e. in an image with double resolution in both dimensions, the equivalent sigma is also double).
+
 
 
 \section{Conclusion}
